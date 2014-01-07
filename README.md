@@ -4,10 +4,8 @@
 
 ### Development Environment
 
+To set up the environment:
+
 ```
-mkdir casa-bootstrap
-curl -L -0 https://api.github.com/repos/AppSharing/casa-bootstrap/tarball | tar -zx -C casa-bootstrap --strip-components 1
-cd casa-bootstrap
-bundle
-thor dev:setup
+curl -L -0 http://appsharing.github.io/casa-bootstrap/dev | bash -s
 ```
