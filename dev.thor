@@ -8,6 +8,7 @@ require 'json'
 class Dev < Thor
 
   PACKAGES = [
+    'casa-engine',
     'casa-receiver',
     'casa-publisher',
     'casa-payload',
