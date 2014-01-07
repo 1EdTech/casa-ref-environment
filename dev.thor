@@ -117,11 +117,12 @@ class Dev < Thor
 
           say "Reading gemspec", [:green,:bold]
           say " - Path: #{gemspec_path}", :green
-          spec = Gem::Specification.load gemspec_path.to_s
+          dependencies = get_gemspec_dependencies package
 
           say "Writing development paths to Gemfile", [:green, :bold]
           say " - Path: #{gemfile_path}", :green
-          File.open(gemfile_path, 'w') { |file| file.write gemfile_content spec.dependencies }
+          File.open(gemfile_path, 'w') { |file| file.write gemfile_content dependencies }
+
 
         else
 
@@ -194,20 +195,48 @@ class Dev < Thor
       "https://github.com/AppSharing/#{package}.git"
     end
 
+    def get_gemspec_dependencies package, ignores = []
+
+      gemspec_path = path_to(package) + "#{package}.gemspec"
+      spec = Gem::Specification.load gemspec_path.to_s
+
+      dependencies = spec.dependencies.map(){ |package|
+        package.name
+      }.select(){ |package|
+        PACKAGES.include?(package) and !ignores.include?(package)
+      }
+
+      case package
+        when 'casa-receiver'
+          dependencies |= PACKAGES.select(){ |dependency|
+            dependency.match(/^casa-attribute-/) and !dependencies.include?(dependency)
+          }
+      end
+
+      dependencies.each do |dependency|
+        dependencies |= get_gemspec_dependencies dependency, dependencies
+      end
+
+      dependencies
+    end
+
     def gemfile_content dependencies
+
         gemfile = []
         gemfile << "source 'https://rubygems.org'"
         gemfile << "gemspec"
         gemfile << "group :development do"
+
         dependencies.each do |dependency|
-          name = dependency.name
-          if PACKAGES.include? name
-            gemfile << "  gem '#{name}', '>= 0', :path => '../#{name}'"
+          if PACKAGES.include? dependency
+            gemfile << "  gem '#{dependency}', '>= 0', :path => '../#{dependency}'"
           end
         end
+
         gemfile << "end"
         gemfile.join("
 ")
+
     end
 
   end
