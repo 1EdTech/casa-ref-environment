@@ -109,14 +109,19 @@ class Dev < Thor
 
         path = path_to package
         gemfile_path = path + 'Gemfile'
+        gemspec_path = path + "#{package}.gemspec"
 
         say "Configuring #{package}", :bold
 
         if managed_packages.include?(package) || settings['configure'] == 'always'
 
-          say "Writing development environment to Gemfile", [:green, :bold]
+          say "Reading gemspec", [:green,:bold]
+          say " - Path: #{gemspec_path}", :green
+          spec = Gem::Specification.load gemspec_path.to_s
+
+          say "Writing development paths to Gemfile", [:green, :bold]
           say " - Path: #{gemfile_path}", :green
-          File.open(gemfile_path, 'w') { |file| file.write gemfile_content }
+          File.open(gemfile_path, 'w') { |file| file.write gemfile_content spec.dependencies }
 
         else
 
@@ -163,38 +168,48 @@ class Dev < Thor
   end
 
   no_commands do
+
     def settings_file
       Pathname.new(__FILE__).parent.realpath + 'config.json'
     end
+
     def settings
       JSON.parse(File.read settings_file).merge options.to_hash
     end
+
     def say_fail message
       say "ERROR - #{message}", [:red,:bold]
       exit 1
     end
+
     def base_path
       @base_path ||= settings.has_key?('path') ? Pathname.new(__FILE__).parent + settings['path'] : Pathname.new(__FILE__).parent
     end
+
     def path_to package
       base_path + package
     end
+
     def git_repo package
       "https://github.com/AppSharing/#{package}.git"
     end
-    def gemfile_content
-      unless @gemfile
-        @gemfile = []
-        @gemfile << "source 'https://rubygems.org'"
-        @gemfile << "gemspec"
-        @gemfile << "group :development do"
-        PACKAGES.each { |package| @gemfile << "  gem '#{package}', '>= 0', :path => '../#{package}'"}
-        @gemfile << "end"
-        @gemfile = @gemfile.join("
+
+    def gemfile_content dependencies
+        gemfile = []
+        gemfile << "source 'https://rubygems.org'"
+        gemfile << "gemspec"
+        gemfile << "group :development do"
+        dependencies.each do |dependency|
+          name = dependency.name
+          if PACKAGES.include? name
+            gemfile << "  gem '#{name}', '>= 0', :path => '../#{name}'"
+          end
+        end
+        gemfile << "end"
+        gemfile.join("
 ")
-      end
-      @gemfile
     end
+
   end
 
 end
