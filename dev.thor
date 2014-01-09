@@ -122,7 +122,7 @@ class Dev < Thor
 
           say "Writing development paths to Gemfile", [:green, :bold]
           say " - Path: #{gemfile_path}", :green
-          File.open(gemfile_path, 'w') { |file| file.write gemfile_content dependencies }
+          File.open(gemfile_path, 'w') { |file| file.write gemfile_content package, dependencies }
 
 
         else
@@ -149,7 +149,13 @@ class Dev < Thor
           Dir.chdir path do
             Bundler.with_clean_env do
               say "Executing bundle", [:green, :bold]
-              status, stdout, stderr = systemu "bundle"
+              case package
+                when 'casa-engine'
+                  command = 'bundle --without mssql'
+                else
+                  command = 'bundle'
+              end
+              status, stdout, stderr = systemu command
               say stdout, :green
             end
           end
@@ -221,7 +227,7 @@ class Dev < Thor
       dependencies
     end
 
-    def gemfile_content dependencies
+    def gemfile_content package, dependencies
 
         gemfile = []
         gemfile << "source 'https://rubygems.org'"
@@ -235,6 +241,12 @@ class Dev < Thor
         end
 
         gemfile << "end"
+        case package
+          when 'casa-engine'
+            gemfile << "group(:mysql2){ gem 'mysql2' }"
+            gemfile << "group(:mssql){ gem 'tiny_tds' }"
+            gemfile << "group(:sqlite){ gem 'sqlite3' }"
+        end
         gemfile.join("
 ")
 
