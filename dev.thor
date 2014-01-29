@@ -137,18 +137,27 @@ class Dev < Thor
     PACKAGES.each do |package|
 
       path = path_to package
-      Dir.chdir path do
-        systemu "git fetch origin"
-        status, stdout, stderr = systemu "git status --short --branch"
-        say "Git status for #{package}", [:green, :bold]
-        say "Branch:", :bold
-        say "  #{stdout.match(/^## (.*)$/)[1]}"
-        changes = stdout.split('
+
+      if Dir.exists? path
+
+        Dir.chdir path do
+          systemu "git fetch origin"
+          status, stdout, stderr = systemu "git status --short --branch"
+          say "Git status for #{package}", [:green, :bold]
+          say "Branch:", :bold
+          say "  #{stdout.match(/^## (.*)$/)[1]}"
+          changes = stdout.split('
 ').select(){ |line| !(line.match(/^##/)) }
-        if changes.length > 0
-          say "Changes:", :bold
-          changes.each { |line| say "  #{line}" }
+          if changes.length > 0
+            say "Changes:", :bold
+            changes.each { |line| say "  #{line}" }
+          end
         end
+
+      else
+
+        say "Package is not installed locally", [:red, :bold]
+
       end
 
     end
@@ -164,6 +173,8 @@ class Dev < Thor
       say "Updating #{package}", :bold
 
       path = path_to package
+
+      download_package package unless Dir.exists? path
 
       Dir.chdir path do
 
