@@ -7,5 +7,5 @@
 To set up the environment:
 
 ```
-curl -L -0 http://appsharing.github.io/casa-bootstrap/dev | bash -s
+curl -L -0 http://appsharing.github.io/casa-bootstrap/dev | sh -s
 ```
