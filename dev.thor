@@ -80,6 +80,120 @@ class Dev < Thor
 
     PACKAGES.each do |package|
 
+      managed_packages << package if download_package package
+
+    end
+
+    unless settings['configure'] == 'never'
+
+      PACKAGES.each do |package|
+
+        say "Configuring #{package}", :bold
+
+        if managed_packages.include?(package) || settings['configure'] == 'always'
+
+          configure_package package
+
+        else
+
+          say "Skipping #{package} as path already exists", [:magenta, :bold]
+          say " - Path: #{path_to package}", :magenta
+
+        end
+
+      end
+
+    end
+
+    unless settings['initialize'] == 'never'
+
+      PACKAGES.each do |package|
+
+        say "Initializing #{package}", :bold
+
+        if managed_packages.include?(package) || settings['initialize'] == 'always'
+
+          initialize_package package
+
+        else
+
+          say "Skipping #{package} as path already exists", [:magenta, :bold]
+          say " - Path: #{path_to package}", :magenta
+
+        end
+
+      end
+
+    end
+
+    say "Setup complete", :bold
+
+  end
+
+  desc "status", "Status current dev environment"
+
+  def status
+
+    PACKAGES.each do |package|
+
+      path = path_to package
+      Dir.chdir path do
+        systemu "git fetch origin"
+        status, stdout, stderr = systemu "git status --short --branch"
+        say "Git status for #{package}", [:green, :bold]
+        say "Branch:", :bold
+        say "  #{stdout.match(/^## (.*)$/)[1]}"
+        changes = stdout.split('
+').select(){ |line| !(line.match(/^##/)) }
+        if changes.length > 0
+          say "Changes:", :bold
+          changes.each { |line| say "  #{line}" }
+        end
+      end
+
+    end
+
+  end
+
+  desc "update", "Update all development packages"
+
+  def update
+
+    PACKAGES.each do |package|
+
+      say "Updating #{package}", :bold
+
+      path = path_to package
+
+      Dir.chdir path do
+
+        status, stdout, stderr = systemu "git branch"
+        branch = stdout.match(/^\* (.*)$/)[1]
+        systemu "git fetch origin #{branch}"
+        status, stdout, stderr = systemu "git status --short --branch"
+
+        if stdout.match(/^## .*\[behind .*\].*$/)
+          say "Merging #{package}", [:green, :bold]
+          status, stdout, stderr = systemu "git merge FETCH_HEAD"
+          say stdout
+          say "Configuring #{package}", [:green, :bold]
+          configure_package package
+          say "Initializing #{package}", [:green, :bold]
+          initialize_package package
+        else
+          say "Skipping #{package} as already up-to-date", [:magenta, :bold]
+        end
+
+      end
+
+    end
+
+  end
+
+  no_commands do
+
+    def download_package package
+
       path = path_to package
       repo = git_repo package
 
@@ -89,6 +203,8 @@ class Dev < Thor
 
         say "Skipping #{package} as path already exists", [:magenta, :bold]
         say " - Path: #{path}", :magenta
+
+        false
 
       else
 
@@ -104,82 +220,48 @@ class Dev < Thor
           say_fail "Clone of #{repo} into #{path} failed!"
         end
 
-      end
-
-    end
-
-    unless settings['configure'] == 'never'
-
-      PACKAGES.each do |package|
-
-        path = path_to package
-        gemfile_path = path + 'Gemfile'
-        gemspec_path = path + "#{package}.gemspec"
-
-        say "Configuring #{package}", :bold
-
-        if managed_packages.include?(package) || settings['configure'] == 'always'
-
-          say "Reading gemspec", [:green,:bold]
-          say " - Path: #{gemspec_path}", :green
-          dependencies = get_gemspec_dependencies package
-
-          say "Writing development paths to Gemfile", [:green, :bold]
-          say " - Path: #{gemfile_path}", :green
-          File.open(gemfile_path, 'w') { |file| file.write gemfile_content package, dependencies }
-
-
-        else
-
-          say "Skipping #{package} as path already exists", [:magenta, :bold]
-          say " - Path: #{path}", :magenta
-
-        end
+        true
 
       end
 
     end
 
-    unless settings['initialize'] == 'never'
+    def configure_package package
 
-      PACKAGES.each do |package|
+      path = path_to package
+      gemfile_path = path + 'Gemfile'
+      gemspec_path = path + "#{package}.gemspec"
 
-        say "Initializing #{package}", :bold
+      say "Reading gemspec", [:green,:bold]
+      say " - Path: #{gemspec_path}", :green
+      dependencies = get_gemspec_dependencies package
 
-        path = path_to package
+      say "Writing development paths to Gemfile", [:green, :bold]
+      say " - Path: #{gemfile_path}", :green
+      File.open(gemfile_path, 'w') { |file| file.write gemfile_content package, dependencies }
+      Dir.chdir(path){ systemu "git update-index --assume-unchanged Gemfile" }
 
-        if managed_packages.include?(package) || settings['initialize'] == 'always'
+    end
 
-          Dir.chdir path do
-            Bundler.with_clean_env do
-              say "Executing bundle", [:green, :bold]
-              case package
-                when 'casa-engine'
-                  command = 'bundle --without mssql'
-                else
-                  command = 'bundle'
-              end
-              status, stdout, stderr = systemu command
-              say stdout, :green
-            end
+    def initialize_package package
+
+      path = path_to package
+
+      Dir.chdir path do
+        Bundler.with_clean_env do
+          say "Executing bundle", [:green, :bold]
+          case package
+            when 'casa-engine'
+              command = 'bundle --without mssql'
+            else
+              command = 'bundle'
           end
-
-        else
-
-          say "Skipping #{package} as path already exists", [:magenta, :bold]
-          say " - Path: #{path}", :magenta
-
+          status, stdout, stderr = systemu command
+          say stdout, :green
         end
-
       end
 
     end
-
-    say "Setup complete", :bold
-
-  end
-
-  no_commands do
 
     def settings_file
       Pathname.new(__FILE__).parent.realpath + 'config.json'
