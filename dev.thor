@@ -9,6 +9,7 @@ class Dev < Thor
 
   PACKAGES = [
     'casa-engine',
+    'casa-relay',
     'casa-receiver',
     'casa-publisher',
     'casa-payload',
@@ -169,32 +170,55 @@ class Dev < Thor
 
   def update
 
+    made_updates = false
+
     PACKAGES.each do |package|
 
       say "Updating #{package}", :bold
 
       path = path_to package
 
-      download_package package unless Dir.exists? path
+      already_existed = Dir.exists? path
+
+      unless already_existed
+        download_package package
+        made_updates = true
+      end
 
       Dir.chdir path do
 
         status, stdout, stderr = systemu "git branch"
         branch = stdout.match(/^\* (.*)$/)[1]
-        status, stdout, stderr = systemu "git fetch origin #{branch}"
+        status, stdout, stderr = systemu "git fetch origin"
         status, stdout, stderr = systemu "git status --short --branch"
 
         if stdout.match(/^## .*\[behind .*\].*$/)
           say "Merging #{package}", [:green, :bold]
-          status, stdout, stderr = systemu "git merge FETCH_HEAD"
-          say stdout
-          say "Configuring #{package}", [:green, :bold]
-          configure_package package
-          say "Initializing #{package}", [:green, :bold]
-          initialize_package package
-        else
+          systemu "git update-index --no-assume-unchanged Gemfile"
+          systemu "git checkout Gemfile"
+          status, stdout, stderr = systemu "git merge origin/#{branch}"
+          say_fail stderr unless status.success?
+          say stdout, :green
+          made_updates = true
+        elsif already_existed
           say "Skipping #{package} as already up-to-date", [:magenta, :bold]
         end
+
+      end
+
+    end
+
+    if made_updates
+
+      PACKAGES.each do |package|
+
+        configure_package package
+
+      end
+
+      PACKAGES.each do |package|
+
+        initialize_package package
 
       end
 
