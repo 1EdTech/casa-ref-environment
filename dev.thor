@@ -143,7 +143,7 @@ class Dev < Thor
       if Dir.exists? path
 
         Dir.chdir path do
-          systemu "git fetch origin"
+          status, stdout, stderr = systemu "git fetch origin"
           status, stdout, stderr = systemu "git status --short --branch"
           say "  Branch:", :bold
           say "    #{stdout.match(/^## (.*)$/)[1]}"
@@ -181,7 +181,7 @@ class Dev < Thor
 
         status, stdout, stderr = systemu "git branch"
         branch = stdout.match(/^\* (.*)$/)[1]
-        systemu "git fetch origin #{branch}"
+        status, stdout, stderr = systemu "git fetch origin #{branch}"
         status, stdout, stderr = systemu "git status --short --branch"
 
         if stdout.match(/^## .*\[behind .*\].*$/)
@@ -219,8 +219,6 @@ class Dev < Thor
         false
 
       else
-
-        managed_packages << package
 
         say "Cloning repository", [:green,:bold]
         say " - Repository: #{repo}", :green
