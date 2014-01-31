@@ -15,10 +15,6 @@ class Dev < Thor
     'casa-payload',
     'casa-support',
     'casa-operation',
-    'casa-operation-translate',
-    'casa-operation-squash',
-    'casa-operation-filter',
-    'casa-operation-transform',
     'casa-attribute',
     'casa-attribute-title'
   ]
