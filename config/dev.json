@@ -1,6 +1,6 @@
 {
 
-  "path": "..",
+  "path": "dev",
 
   "exec": {
     "git" : "git",
@@ -21,6 +21,9 @@
     "casa-engine": {
       "remotes" : {
         "origin" : "http://github.com/AppSharing/casa-engine"
+      },
+      "bundler": {
+        "install": "install --without mssql"
       }
     },
     "casa-operation": {
@@ -30,7 +33,7 @@
     },
     "casa-payload": {
       "remotes" : {
-        "origin" : "http://github.com/AppSharing/casa-engine"
+        "origin" : "http://github.com/AppSharing/casa-payload"
       }
     },
     "casa-publisher": {

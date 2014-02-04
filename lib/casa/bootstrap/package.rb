@@ -1,4 +1,5 @@
 require 'fileutils'
+require 'ostruct'
 
 module CASA
   module Bootstrap
@@ -13,7 +14,7 @@ module CASA
 
         @name = name
         @path = path
-        @config = config
+        @config = OpenStruct.new config
         @environment = environment
         @new = exists?
 
@@ -57,6 +58,16 @@ module CASA
 
       end
 
+      def setup_bundle! *options
+
+        if new? or options.include? :overwrite
+          in_dir do
+            environment.exec :bundler, config.bundler and config.bundler.has_key?('install') ? config.bundler['install'] : 'install'
+          end
+        end
+
+      end
+
       def setup_dir! *options
 
         if exists?
@@ -82,7 +93,7 @@ module CASA
       def pull_remote_branch!
 
         in_dir do
-          environment.exec :git, "pull #{config['remotes'][config['remote']]} #{config['branch']}"
+          environment.exec :git, "pull #{config.remotes[config.remote]} #{config.branch}"
         end
 
       end
@@ -90,7 +101,7 @@ module CASA
       def setup_remotes!
 
         in_dir do
-          config['remotes'].each do |remote_name, remote_path|
+          config.remotes.each do |remote_name, remote_path|
             environment.exec :git, "remote add #{remote_name} #{remote_path}"
           end
         end
@@ -100,8 +111,8 @@ module CASA
       def setup_branch_config!
 
         in_dir do
-          environment.exec :git, "config branch.#{config['branch']}.remote #{config['remote']}"
-          environment.exec :git, "config branch.#{config['branch']}.merge refs/heads/#{config['branch']}"
+          environment.exec :git, "config branch.#{config.branch}.remote #{config.remote}"
+          environment.exec :git, "config branch.#{config.branch}.merge refs/heads/#{config.branch}"
         end
 
       end

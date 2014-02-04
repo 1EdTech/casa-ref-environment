@@ -43,6 +43,12 @@ module CASA
 
       end
 
+      def setup_bundles! *args
+
+        each_package { |package| package.setup_bundle! *args  }
+
+      end
+
       def each_package
 
         result = {}
