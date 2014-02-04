@@ -1,4 +1,6 @@
-# CASA Bootstrap
+# CASA Environment
+
+An environment manager for the CASA reference implementation.
 
 ## Usage
 
@@ -7,5 +9,9 @@
 To set up the environment:
 
 ```
-curl -L -0 http://appsharing.github.io/casa-bootstrap/dev | sh -s
+thor env:setup:dev
 ```
+
+See `config/dev.json` to configure environment parameters.
+
+
