@@ -31,11 +31,25 @@ module CASA
 
       end
 
-      def setup_repositories!
+      def setup_repositories! *args
 
+        each_package { |package| package.setup_git_repository! *args  }
+
+      end
+
+      def setup_gemfiles! *args
+
+        each_package { |package| package.setup_gemfile! *args  }
+
+      end
+
+      def each_package
+
+        result = {}
         packages.each do |name, package|
-          package.setup_git_repository! unless package.exists?
+          result[name] = yield package
         end
+        result
 
       end
 

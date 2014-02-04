@@ -28,6 +28,7 @@ module Env
 
       environment.make_workspace_directory! and say "Create workspace directory", :green
       environment.setup_repositories!
+      environment.setup_gemfiles!
 
     end
 

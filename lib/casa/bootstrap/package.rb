@@ -15,6 +15,13 @@ module CASA
         @path = path
         @config = config
         @environment = environment
+        @new = exists?
+
+      end
+
+      def new?
+
+        @new
 
       end
 
@@ -24,9 +31,10 @@ module CASA
 
       end
 
-      def setup_git_repository! overwrite = false
+      def setup_git_repository! *options
 
-        if setup_dir! overwrite
+        if setup_dir! *options
+          @new = true
           setup_git!
           pull_remote_branch!
           setup_remotes!
@@ -38,10 +46,21 @@ module CASA
 
       end
 
-      def setup_dir! overwrite = false
+      def setup_gemfile! *options
+
+        if new? or options.include? :overwrite
+          gemfile = CASA::Bootstrap::Support::Gemfile.new path + 'Gemfile'
+          environment.each_package { |package| gemfile.set_local_package package.name, "../#{package.name}" }
+          gemfile.save!
+          set_gemfile_git_ignore!
+        end
+
+      end
+
+      def setup_dir! *options
 
         if exists?
-          if overwrite
+          if options.include? :overwrite
             FileUtils.rm_rf path
           else
             return false
@@ -83,6 +102,22 @@ module CASA
         in_dir do
           environment.exec :git, "config branch.#{config['branch']}.remote #{config['remote']}"
           environment.exec :git, "config branch.#{config['branch']}.merge refs/heads/#{config['branch']}"
+        end
+
+      end
+
+      def set_gemfile_git_ignore!
+
+        in_dir do
+          environment.exec :git, "update-index --assume-unchanged Gemfile"
+        end
+
+      end
+
+      def unset_gemfile_git_ignore!
+
+        in_dir do
+          environment.exec :git, "update-index --no-assume-unchanged Gemfile"
         end
 
       end
