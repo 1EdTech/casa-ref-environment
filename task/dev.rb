@@ -15,18 +15,22 @@ module Env
 
     end
 
+    def check_dependencies
+
+      system = CASA::Bootstrap::System.new @config
+      say_fail "Git must be installed" unless system.has_git?
+      say_fail "Bundler must be installed" unless system.has_bundler?
+
+    end
+
     desc "setup", "Setup the development environment"
 
     def setup
 
-      system = CASA::Bootstrap::System.new @config
-
-      say_fail "Git must be installed" unless system.has_git?
-      say_fail "Bundler must be installed" unless system.has_bundler?
+      check_dependencies
 
       environment = CASA::Bootstrap::Environment.new @config
-
-      environment.make_workspace_directory! and say "Create workspace directory", :green
+      environment.make_workspace_directory!
       environment.setup_repositories!
       environment.setup_gemfiles!
       environment.setup_bundles!

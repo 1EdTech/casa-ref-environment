@@ -16,7 +16,7 @@ module CASA
         @path = path
         @config = OpenStruct.new config
         @environment = environment
-        @new = exists?
+        @new = !exists?
 
       end
 
@@ -31,6 +31,8 @@ module CASA
         Dir.exists? path
 
       end
+
+      # FULL ACTIONS
 
       def setup_git_repository! *options
 
@@ -54,6 +56,9 @@ module CASA
           environment.each_package { |package| gemfile.set_local_package package.name, "../#{package.name}" }
           gemfile.save!
           set_gemfile_git_ignore!
+          true
+        else
+          false
         end
 
       end
@@ -64,9 +69,14 @@ module CASA
           in_dir do
             environment.exec :bundler, config.bundler and config.bundler.has_key?('install') ? config.bundler['install'] : 'install'
           end
+          true
+        else
+          false
         end
 
       end
+
+      # PARTIAL ACTIONS
 
       def setup_dir! *options
 

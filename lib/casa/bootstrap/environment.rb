@@ -49,13 +49,14 @@ module CASA
 
       end
 
+      # Returns array of package names for all packages that returned true
       def each_package
 
         result = {}
         packages.each do |name, package|
           result[name] = yield package
         end
-        result
+        result.keep_if(){ |_,v| v }.keys
 
       end
 
