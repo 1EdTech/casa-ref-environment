@@ -1,5 +1,6 @@
 require 'fileutils'
 require 'systemu'
+require 'casa/bootstrap/package'
 
 module CASA
   module Bootstrap
@@ -49,6 +50,12 @@ module CASA
 
       end
 
+      def get_packages_status *args
+
+        each_package { |package| package.get_status *args }
+
+      end
+
       # Returns array of package names for all packages that returned true
       def each_package
 
@@ -56,7 +63,7 @@ module CASA
         packages.each do |name, package|
           result[name] = yield package
         end
-        result.keep_if(){ |_,v| v }.keys
+        result
 
       end
 
@@ -66,7 +73,7 @@ module CASA
           @packages = {}
           config.packages.each do |package_name, package_config|
             package_path = config.path + package_name
-            @packages[package_name] = Package.new package_name, package_path, package_config, self
+            @packages[package_name] = CASA::Bootstrap::Package.new package_name, package_path, package_config, self
           end
         end
         @packages

@@ -1,11 +1,18 @@
 require 'thor'
-require 'casa/bootstrap'
+require 'casa/bootstrap/support/dsl/say'
+require 'casa/bootstrap/support/dsl/environment'
+require 'casa/bootstrap/support/dsl/check_dependencies'
+require 'casa/bootstrap/configuration'
 
 module Env
 
   class Dev < Thor
 
-    include CASA::Bootstrap::Support::Thor::Say
+    include CASA::Bootstrap::Support::DSL::Say
+    include CASA::Bootstrap::Support::DSL::Environment
+    include CASA::Bootstrap::Support::DSL::CheckDependencies
+
+    attr_reader :config
 
     def initialize args = [], options = {}, config = {}
 
@@ -15,25 +22,26 @@ module Env
 
     end
 
-    def check_dependencies
-
-      system = CASA::Bootstrap::System.new @config
-      say_fail "Git must be installed" unless system.has_git?
-      say_fail "Bundler must be installed" unless system.has_bundler?
-
-    end
-
     desc "setup", "Setup the development environment"
 
     def setup
 
       check_dependencies
 
-      environment = CASA::Bootstrap::Environment.new @config
       environment.make_workspace_directory!
       environment.setup_repositories!
       environment.setup_gemfiles!
       environment.setup_bundles!
+
+    end
+
+    desc "status", "Check the status of a development environment"
+
+    def status
+
+      check_dependencies
+
+      say_status environment.get_packages_status
 
     end
 

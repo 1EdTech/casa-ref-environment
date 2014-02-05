@@ -76,6 +76,30 @@ module CASA
 
       end
 
+      def get_status *options
+
+        if exists?
+          {
+            :git => get_git_status
+          }
+        else
+          false
+        end
+
+      end
+
+      def get_git_status *options
+        in_dir do
+          environment.exec :git, "fetch #{config.remote}"
+          status, stdout, stderr = environment.exec_result :git, 'status --short --branch'
+          {
+            :branch => stdout.match(/^## (.*)$/)[1],
+            :changes => stdout.split('
+').select(){ |line| !(line.match(/^##/)) }
+          }
+        end
+      end
+
       # PARTIAL ACTIONS
 
       def setup_dir! *options
