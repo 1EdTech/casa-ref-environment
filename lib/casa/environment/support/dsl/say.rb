@@ -1,5 +1,5 @@
 module CASA
-  module Bootstrap
+  module Environment
     module Support
       module DSL
         module Say

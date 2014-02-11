@@ -1,8 +1,9 @@
 require 'fileutils'
 require 'ostruct'
+require 'casa/environment/support/gemfile'
 
 module CASA
-  module Bootstrap
+  module Environment
     class Package
 
       attr_reader :name
@@ -52,7 +53,7 @@ module CASA
       def setup_gemfile! *options
 
         if new? or options.include? :overwrite
-          gemfile = CASA::Bootstrap::Support::Gemfile.new path + 'Gemfile'
+          gemfile = CASA::Environment::Support::Gemfile.new path + 'Gemfile'
           environment.each_package { |package| gemfile.set_local_package package.name, "../#{package.name}" }
           gemfile.save!
           set_gemfile_git_ignore!
@@ -67,7 +68,12 @@ module CASA
 
         if new? or options.include? :overwrite
           in_dir do
-            environment.exec :bundler, config.bundler and config.bundler.has_key?('install') ? config.bundler['install'] : 'install'
+            if config.bundler and config.bundler.has_key?('install')
+              install_command = config.bundler['install']
+            else
+              install_command = 'install'
+            end
+            environment.exec :bundler, install_command
           end
           true
         else

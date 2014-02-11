@@ -1,13 +1,13 @@
-require 'casa/bootstrap/environment'
+require 'casa/environment/environment'
 
 module CASA
-  module Bootstrap
+  module Environment
     module Support
       module DSL
         module Environment
 
           def environment
-            @environment ||= CASA::Bootstrap::Environment.new config
+            @environment ||= CASA::Environment::Environment.new config
           end
 
         end

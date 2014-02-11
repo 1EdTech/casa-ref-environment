@@ -1,16 +1,16 @@
 require 'thor'
-require 'casa/bootstrap/support/dsl/say'
-require 'casa/bootstrap/support/dsl/environment'
-require 'casa/bootstrap/support/dsl/check_dependencies'
-require 'casa/bootstrap/configuration'
+require 'casa/environment/support/dsl/say'
+require 'casa/environment/support/dsl/environment'
+require 'casa/environment/support/dsl/check_dependencies'
+require 'casa/environment/configuration'
 
 module Env
 
   class Dev < Thor
 
-    include CASA::Bootstrap::Support::DSL::Say
-    include CASA::Bootstrap::Support::DSL::Environment
-    include CASA::Bootstrap::Support::DSL::CheckDependencies
+    include CASA::Environment::Support::DSL::Say
+    include CASA::Environment::Support::DSL::Environment
+    include CASA::Environment::Support::DSL::CheckDependencies
 
     attr_reader :config
 
@@ -18,7 +18,7 @@ module Env
 
       super args, options, config
 
-      @config = CASA::Bootstrap::Configuration.new 'config/dev.json'
+      @config = CASA::Environment::Configuration.new 'config/dev.json'
 
     end
 

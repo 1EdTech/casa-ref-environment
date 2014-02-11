@@ -1,9 +1,9 @@
 require 'fileutils'
 require 'systemu'
-require 'casa/bootstrap/package'
+require 'casa/environment/package'
 
 module CASA
-  module Bootstrap
+  module Environment
     class Environment
 
       attr_reader :config
@@ -73,7 +73,7 @@ module CASA
           @packages = {}
           config.packages.each do |package_name, package_config|
             package_path = config.path + package_name
-            @packages[package_name] = CASA::Bootstrap::Package.new package_name, package_path, package_config, self
+            @packages[package_name] = CASA::Environment::Package.new package_name, package_path, package_config, self
           end
         end
         @packages

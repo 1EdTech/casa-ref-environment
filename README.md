@@ -6,12 +6,16 @@ An environment manager for the CASA reference implementation.
 
 ### Development Environment
 
+To configure development environment parameters, edit `config/dev.json`.
+
 To set up the environment:
 
 ```
-thor env:setup:dev
+bundle exec thor env:setup:dev
 ```
 
-See `config/dev.json` to configure environment parameters.
+To check current status of repositories in the development:
 
-
+```
+bundle exec thor env:setup:status
+```

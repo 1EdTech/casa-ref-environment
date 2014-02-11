@@ -3,7 +3,7 @@ require 'ostruct'
 require 'pathname'
 
 module CASA
-  module Bootstrap
+  module Environment
     class Configuration
 
       attr_reader :base_path

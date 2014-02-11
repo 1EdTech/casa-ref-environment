@@ -1,7 +1,7 @@
 require 'systemu'
 
 module CASA
-  module Bootstrap
+  module Environment
     class System
 
       attr_reader :config

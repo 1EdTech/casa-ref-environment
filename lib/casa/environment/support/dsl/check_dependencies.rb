@@ -1,14 +1,14 @@
-require 'casa/bootstrap/system'
+require 'casa/environment/system'
 
 module CASA
-  module Bootstrap
+  module Environment
     module Support
       module DSL
         module CheckDependencies
 
           def check_dependencies
 
-            system = CASA::Bootstrap::System.new config
+            system = CASA::Environment::System.new config
             say_fail "Git must be installed" unless system.has_git?
             say_fail "Bundler must be installed" unless system.has_bundler?
 
