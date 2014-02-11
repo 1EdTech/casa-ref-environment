@@ -32,26 +32,38 @@ module CASA
 
       end
 
-      def setup_repositories! *args
+      def destroy_workspace_directory_if_empty!
+
+        Dir.rmdir config.path unless Dir["#{config.path}/*"].count > 0
+
+      end
+
+      def setup_package_repositories! *args
 
         each_package { |package| package.setup_git_repository! *args  }
 
       end
 
-      def update_repositories! *args
+      def update_package_repositories! *args
 
-        setup_repositories! *args
+        setup_package_repositories! *args
         each_package { |package| package.update_git_repository! *args  }
 
       end
 
-      def setup_gemfiles! *args
+      def destroy_package_directories! *args
+
+        each_package { |package| package.destroy_directory! *args  }
+
+      end
+
+      def setup_package_gemfiles! *args
 
         each_package { |package| package.setup_gemfile! *args  }
 
       end
 
-      def setup_bundles! *args
+      def setup_package_bundles! *args
 
         each_package { |package| package.setup_bundle! *args  }
 

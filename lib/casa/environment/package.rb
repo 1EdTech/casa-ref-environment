@@ -69,6 +69,12 @@ module CASA
 
       end
 
+      def destroy_directory! *options
+
+        FileUtils.rm_rf path
+
+      end
+
       def setup_gemfile! *options
 
         if new? or options.include? :overwrite

@@ -31,9 +31,9 @@ module Env
       check_dependencies
 
       environment.make_workspace_directory!
-      environment.setup_repositories!
-      environment.setup_gemfiles!
-      environment.setup_bundles!
+      environment.setup_package_repositories!
+      environment.setup_package_gemfiles!
+      environment.setup_package_bundles!
 
     end
 
@@ -47,15 +47,26 @@ module Env
 
     end
 
-    desc "update", "Update the environment"
+    desc "update", "Update the development environment"
 
     def update
 
       check_dependencies
 
-      environment.update_repositories!
-      environment.setup_gemfiles!
-      environment.setup_bundles!
+      environment.update_package_repositories!
+      environment.setup_package_gemfiles!
+      environment.setup_package_bundles!
+
+    end
+
+    desc "destroy", "Destroy the development environment"
+
+    def destroy
+
+      check_dependencies
+
+      environment.destroy_package_directories!
+      environment.destroy_workspace_directory_if_empty!
 
     end
 
