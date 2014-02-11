@@ -16,11 +16,11 @@ module CASA
       end
 
       def has_git?
-        has_dependency? "#{@config.exec.git} --version"
+        has_dependency? "#{@config.cmd.git} --version"
       end
 
       def has_bundler?
-        has_dependency? "#{@config.exec.bundler} --version"
+        has_dependency? "#{@config.cmd.bundler} --version"
       end
 
     end

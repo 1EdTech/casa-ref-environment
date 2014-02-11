@@ -18,7 +18,9 @@ module Env
 
       super args, options, config
 
-      @config = CASA::Environment::Configuration.new 'config/dev.json'
+      @config = CASA::Environment::Configuration.new
+      @config.load_config_file! 'config/base.json'
+      @config.load_config_file! 'config/dev.json'
 
     end
 
@@ -42,6 +44,18 @@ module Env
       check_dependencies
 
       say_status environment.get_packages_status
+
+    end
+
+    desc "update", "Update the environment"
+
+    def update
+
+      check_dependencies
+
+      environment.update_repositories!
+      environment.setup_gemfiles!
+      environment.setup_bundles!
 
     end
 

@@ -50,6 +50,25 @@ module CASA
 
       end
 
+      def update_git_repository! *options
+
+        unless @new
+
+          fetch_git_repository!
+
+          unless git_branch_is_up_to_date?
+
+            unset_gemfile_git_ignore!
+            cmd :git, 'checkout Gemfile'
+            cmd :git, "merge #{config.remote}/#{git_branch}"
+            @new = true
+
+          end
+
+        end
+
+      end
+
       def setup_gemfile! *options
 
         if new? or options.include? :overwrite
@@ -67,14 +86,12 @@ module CASA
       def setup_bundle! *options
 
         if new? or options.include? :overwrite
-          in_dir do
-            if config.bundler and config.bundler.has_key?('install')
-              install_command = config.bundler['install']
-            else
-              install_command = 'install'
-            end
-            environment.exec :bundler, install_command
+          if config.bundler and config.bundler.has_key?('install')
+            install_command = config.bundler['install']
+          else
+            install_command = 'install'
           end
+          cmd :bundler, install_command
           true
         else
           false
@@ -95,15 +112,15 @@ module CASA
       end
 
       def get_git_status *options
-        in_dir do
-          environment.exec :git, "fetch #{config.remote}"
-          status, stdout, stderr = environment.exec_result :git, 'status --short --branch'
-          {
-            :branch => stdout.match(/^## (.*)$/)[1],
-            :changes => stdout.split('
+
+        fetch_git_repository!
+        status, stdout, stderr = cmd_result :git, 'status --short --branch'
+        {
+          :branch => stdout.match(/^## (.*)$/)[1],
+          :changes => stdout.split('
 ').select(){ |line| !(line.match(/^##/)) }
-          }
-        end
+        }
+
       end
 
       # PARTIAL ACTIONS
@@ -124,54 +141,81 @@ module CASA
 
       def setup_git!
 
-        in_dir do
-          environment.exec :git, "init"
-        end
+        cmd :git, "init"
 
       end
 
       def pull_remote_branch!
 
-        in_dir do
-          environment.exec :git, "pull #{config.remotes[config.remote]} #{config.branch}"
-        end
+        cmd :git, "pull #{config.remotes[config.remote]} #{config.branch}"
 
       end
 
       def setup_remotes!
 
-        in_dir do
-          config.remotes.each do |remote_name, remote_path|
-            environment.exec :git, "remote add #{remote_name} #{remote_path}"
-          end
+        config.remotes.each do |remote_name, remote_path|
+          cmd :git, "remote add #{remote_name} #{remote_path}"
         end
 
       end
 
       def setup_branch_config!
 
-        in_dir do
-          environment.exec :git, "config branch.#{config.branch}.remote #{config.remote}"
-          environment.exec :git, "config branch.#{config.branch}.merge refs/heads/#{config.branch}"
-        end
+        cmd :git, "config branch.#{config.branch}.remote #{config.remote}"
+        cmd :git, "config branch.#{config.branch}.merge refs/heads/#{config.branch}"
 
       end
 
       def set_gemfile_git_ignore!
 
-        in_dir do
-          environment.exec :git, "update-index --assume-unchanged Gemfile"
-        end
+        cmd :git, "update-index --assume-unchanged Gemfile"
 
       end
 
       def unset_gemfile_git_ignore!
 
+        cmd :git, "update-index --no-assume-unchanged Gemfile"
+
+      end
+
+      def git_branch
+
+        _, stdout, _ = cmd_result :git, 'branch'
+        stdout.match(/^\* (.*)$/)[1]
+
+      end
+
+      def git_branch_is_up_to_date?
+
         in_dir do
-          environment.exec :git, "update-index --no-assume-unchanged Gemfile"
+          _, stdout, _ = environment.cmd_result :git, 'status --short --branch'
+          stdout.match(/^## .*\[behind .*\].*$/).nil?
         end
 
       end
+
+      def fetch_git_repository!
+
+        cmd :git, "fetch #{config.remote}"
+
+      end
+
+      def cmd name, command
+
+        in_dir do
+          environment.cmd name, command
+        end
+
+      end
+
+      def cmd_result name, command
+
+        in_dir do
+          environment.cmd_result name, command
+        end
+
+      end
+
 
       def in_dir
 

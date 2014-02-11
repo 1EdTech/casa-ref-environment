@@ -15,6 +15,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'thor'
   s.add_dependency 'systemu'
+  s.add_dependency 'deep_merge'
 
   s.add_development_dependency 'rake'
   s.add_development_dependency 'coveralls'

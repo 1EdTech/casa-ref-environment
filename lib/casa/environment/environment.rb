@@ -38,6 +38,13 @@ module CASA
 
       end
 
+      def update_repositories! *args
+
+        setup_repositories! *args
+        each_package { |package| package.update_git_repository! *args  }
+
+      end
+
       def setup_gemfiles! *args
 
         each_package { |package| package.setup_gemfile! *args  }
@@ -80,16 +87,16 @@ module CASA
 
       end
 
-      def exec name, command
+      def cmd name, command
 
-        status, stdout, stderr = exec_result name, command
+        status, stdout, stderr = cmd_result name, command
         status.success?
 
       end
 
-      def exec_result name, command
+      def cmd_result name, command
 
-        systemu "#{config.exec.send name.to_sym} #{command}"
+        systemu "#{config.cmd.send name.to_sym} #{command}"
 
       end
 
