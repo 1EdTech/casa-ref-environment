@@ -2,14 +2,14 @@ require 'json'
 require 'ostruct'
 require 'pathname'
 require 'deep_merge'
-require 'casa/environment/support/class/extend_method'
+require 'extend_method'
 
 module CASA
   module Environment
     class Configuration
 
       class << self
-        include ::CASA::Environment::Support::Class::ExtendMethod
+        include ExtendMethod
       end
 
       attr_reader :base_path
