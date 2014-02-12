@@ -21,8 +21,6 @@ module CASA
           line = "gem '#{gem_name}', {#{gem_options.map(){|k,v|":#{k} => '#{v}'"}.join(', ')}}"
           content << "
 #{line}" unless content.match /^\s*#{line}\s*$/
-          puts line
-          puts content
         end
 
         def save!

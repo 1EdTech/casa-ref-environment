@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'systemu'
   s.add_dependency 'deep_merge'
   s.add_dependency 'extend_method'
+  s.add_dependency 'sequel'
 
   s.add_development_dependency 'rake'
   s.add_development_dependency 'coveralls'

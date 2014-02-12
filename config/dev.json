@@ -55,13 +55,19 @@
       },
 
       "persistence":{
+        "adj_in_peers":[
+          {
+            "name": "in1",
+            "uri": "http://localhost:9090"
+          }
+        ],
         "local_payloads":[
           {
             "identity": {
               "originator_id": "1f262086-615f-11e3-bf13-d231feb1dc81",
               "id": "dev1"
             },
-            "original": {
+            "attributes": {
               "timestamp": "2014-02-11T00:00:00-00:00",
               "uri": "http://example.com",
               "share": true,
@@ -76,13 +82,39 @@
               "originator_id": "1f262086-615f-11e3-bf13-d231feb1dc81",
               "id": "dev2"
             },
-            "original": {
+            "attributes": {
               "timestamp": "2014-02-11T00:00:00-00:00",
               "uri": "http://example.org",
               "share": true,
               "propagate": true,
               "use": {
                 "title": "Dev App 2"
+              }
+            }
+          }
+        ],
+        "adj_in_payloads":[
+          {
+            "identity": {
+              "originator_id": "1f262086-615f-11e3-bf13-d231feb1dc80",
+              "id": "received1"
+            },
+            "original": {
+              "timestamp": "2014-02-12T00:00:00-00:00",
+              "uri": "http://example.net",
+              "share": true,
+              "propagate": true,
+              "use": {
+                "title": "Received App"
+              }
+            },
+            "attributes": {
+              "timestamp": "2014-02-12T00:00:00-00:00",
+              "uri": "http://example.net",
+              "share": true,
+              "propagate": true,
+              "use": {
+                "title": "Received App"
               }
             }
           }
