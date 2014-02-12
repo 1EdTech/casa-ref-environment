@@ -1,6 +1,7 @@
 require 'fileutils'
 require 'ostruct'
 require 'casa/environment/support/gemfile'
+require 'casa/environment/package_configuration'
 
 module CASA
   module Environment
@@ -62,16 +63,19 @@ module CASA
             cmd :git, 'checkout Gemfile'
             cmd :git, "merge #{config.remote}/#{git_branch}"
             @new = true
+            true
+
+          else
+
+            false
 
           end
 
+        else
+
+          false
+
         end
-
-      end
-
-      def destroy_directory! *options
-
-        FileUtils.rm_rf path
 
       end
 
@@ -105,6 +109,12 @@ module CASA
 
       end
 
+      def configure!
+
+        invoke_configuration_handler_method :configure!
+
+      end
+
       def get_status *options
 
         if exists?
@@ -124,8 +134,31 @@ module CASA
         {
           :branch => stdout.match(/^## (.*)$/)[1],
           :changes => stdout.split('
-').select(){ |line| !(line.match(/^##/)) }
+                                   ').select(){ |line| !(line.match(/^##/)) }
         }
+
+      end
+
+      def reset!
+
+        invoke_configuration_handler_method :reset!
+
+      end
+
+      def reset_gemfile!
+
+        unset_gemfile_git_ignore!
+        cmd :git, 'checkout Gemfile'
+        setup_gemfile! :overwrite
+        set_gemfile_git_ignore!
+        setup_bundle! :overwrite
+
+      end
+
+      def destroy_directory! *options
+
+        FileUtils.rm_rf path
+        true
 
       end
 
@@ -169,6 +202,31 @@ module CASA
 
         cmd :git, "config branch.#{config.branch}.remote #{config.remote}"
         cmd :git, "config branch.#{config.branch}.merge refs/heads/#{config.branch}"
+
+      end
+
+      def configuration_handler
+
+        begin
+          handler_name = "CASA::Environment::PackageConfiguration::#{name.gsub(/^casa-/,'').split('-').map(&:capitalize).join('')}"
+          klass = "CASA::Environment::PackageConfiguration::#{handler_name}".split('::').inject(Object){|o,c| o.const_get c}
+          klass.new self
+        rescue NameError
+          nil
+        end
+
+      end
+
+      def invoke_configuration_handler_method method
+
+        configuration = configuration_handler
+
+        if configuration
+          configuration.send method
+          true
+        else
+          false
+        end
 
       end
 

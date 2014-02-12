@@ -1,5 +1,96 @@
 {
 
-  "path": "dev"
+  "path": "dev",
+
+  "packages": {
+
+    "casa-engine": {
+
+      "settings": {
+        "engine": {
+          "id": "1f262086-615f-11e3-bf13-d231feb1dc81",
+          "modules":[
+            "publisher",
+            "receiver",
+            "relay",
+            "local"
+          ],
+          "database":{
+            "adapter":"mysql2",
+            "host":"localhost",
+            "user":"root",
+            "password":"root",
+            "database":"casa_dev"
+          },
+          "jobs":{
+            "intervals":{
+              "receive_in":"5s",
+              "adj_in_to_adj_out":"5s",
+              "adj_in_to_local":"5s",
+              "local_to_adj_out":"5s"
+            }
+          }
+        },
+        "attributes":{
+          "title":{
+            "name": "title",
+            "class": "CASA::Attribute::Title",
+            "options": {
+              "in_filter": {
+                "blacklist": []
+              },
+              "in_transform": {},
+              "local_transform": {},
+              "out_filter": {
+                "blacklist": []
+              },
+              "out_transform": {}
+            }
+          }
+        }
+      },
+
+      "gems":{
+        "casa-attribute-title": { "path": "../casa-attribute-title" }
+      },
+
+      "persistence":{
+        "local_payloads":[
+          {
+            "identity": {
+              "originator_id": "1f262086-615f-11e3-bf13-d231feb1dc81",
+              "id": "dev1"
+            },
+            "original": {
+              "timestamp": "2014-02-11T00:00:00-00:00",
+              "uri": "http://example.com",
+              "share": true,
+              "propagate": true,
+              "use": {
+                "title": "Dev App 1"
+              }
+            }
+          },
+          {
+            "identity": {
+              "originator_id": "1f262086-615f-11e3-bf13-d231feb1dc81",
+              "id": "dev2"
+            },
+            "original": {
+              "timestamp": "2014-02-11T00:00:00-00:00",
+              "uri": "http://example.org",
+              "share": true,
+              "propagate": true,
+              "use": {
+                "title": "Dev App 2"
+              }
+            }
+          }
+        ]
+      }
+
+    }
+
+  }
 
 }

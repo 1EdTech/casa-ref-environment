@@ -17,6 +17,14 @@ module CASA
           content.gsub! pattern, "#{match[1]}:path => '#{package_path}'#{match[2]}" if match
         end
 
+        def set_gem gem_name, gem_options
+          line = "gem '#{gem_name}', {#{gem_options.map(){|k,v|":#{k} => '#{v}'"}.join(', ')}}"
+          content << "
+#{line}" unless content.match /^\s*#{line}\s*$/
+          puts line
+          puts content
+        end
+
         def save!
           File.open(path, 'w') { |file| file.write content }
         end

@@ -59,6 +59,26 @@ module Env
 
     end
 
+    desc "configure", "Create development environment configuration"
+
+    def configure
+
+      check_dependencies
+
+      environment.configure_packages!
+
+    end
+
+    desc "reset", "Reset development environment configuration"
+
+    def reset
+
+      check_dependencies
+
+      environment.reset_packages!
+
+    end
+
     desc "destroy", "Destroy the development environment"
 
     def destroy

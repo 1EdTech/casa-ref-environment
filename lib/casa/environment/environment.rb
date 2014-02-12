@@ -69,6 +69,18 @@ module CASA
 
       end
 
+      def configure_packages! *args
+
+        each_package { |package| package.configure! *args  }
+
+      end
+
+      def reset_packages! *args
+
+        each_package { |package| package.reset! *args  }
+
+      end
+
       def get_packages_status *args
 
         each_package { |package| package.get_status *args }
