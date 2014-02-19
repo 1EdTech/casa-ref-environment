@@ -20,6 +20,12 @@ To configure the environment, edit `config/dev.json` and then:
 bundle exec thor env:dev:configure
 ```
 
+To reset the configuration (should always before running configure again):
+
+```
+bundle exec thor env:dev:reset
+```
+
 To check current status of repositories in the development:
 
 ```

@@ -27,7 +27,7 @@
         "origin" : "http://github.com/AppSharing/casa-engine"
       },
       "bundler": {
-        "install": "install --without mssql"
+        "install": "install --without=mssql"
       }
     },
     "casa-operation": {

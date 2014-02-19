@@ -1,5 +1,6 @@
 require 'fileutils'
 require 'ostruct'
+require 'bundler'
 require 'casa/environment/support/gemfile'
 require 'casa/environment/package_configuration'
 
@@ -101,7 +102,9 @@ module CASA
           else
             install_command = 'install'
           end
-          cmd :bundler, install_command
+          Bundler.with_clean_env do
+            cmd :bundler, install_command
+          end
           true
         else
           false
