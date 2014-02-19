@@ -16,6 +16,12 @@
         "origin" : "http://github.com/AppSharing/casa-attribute-title"
       }
     },
+    "casa-bootstrap": {
+      "remotes" : {
+        "origin" : "http://github.com/AppSharing/casa-bootstrap"
+      },
+      "branch": "gh-pages"
+    },
     "casa-engine": {
       "remotes" : {
         "origin" : "http://github.com/AppSharing/casa-engine"
