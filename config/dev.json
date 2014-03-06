@@ -1,6 +1,6 @@
 {
 
-  "path": "dev",
+  "path": "..",
 
   "packages": {
 
@@ -62,62 +62,11 @@
           }
         ],
         "local_payloads":[
-          {
-            "identity": {
-              "originator_id": "1f262086-615f-11e3-bf13-d231feb1dc81",
-              "id": "dev1"
-            },
-            "attributes": {
-              "timestamp": "2014-02-11T00:00:00-00:00",
-              "uri": "http://example.com",
-              "share": true,
-              "propagate": true,
-              "use": {
-                "title": "Dev App 1"
-              }
-            }
-          },
-          {
-            "identity": {
-              "originator_id": "1f262086-615f-11e3-bf13-d231feb1dc81",
-              "id": "dev2"
-            },
-            "attributes": {
-              "timestamp": "2014-02-11T00:00:00-00:00",
-              "uri": "http://example.org",
-              "share": true,
-              "propagate": true,
-              "use": {
-                "title": "Dev App 2"
-              }
-            }
-          }
+          {"identity":{"originator_id":"1f262086-615f-11e3-bf13-d231feb1dc81","id":"ex1"},"original":{"timestamp":"1970-01-01T00:00:01-00:00","uri":"http://example.com","share":true,"propagate":true,"use":{"title":"Sample Application 1"},"require":{}},"attributes":{"uri":"http://example.com","timestamp":"1970-01-01T00:00:01-00:00","share":true,"propagate":true,"use":{"title":"Sample Application 1"},"require":{}}},
+          {"identity":{"originator_id":"1f262086-615f-11e3-bf13-d231feb1dc81","id":"ex2"},"original":{"timestamp":"1970-01-01T00:00:01-00:00","uri":"http://example.com","share":true,"propagate":true,"use":{"title":"Sample Application 2"},"require":{}},"attributes":{"uri":"http://example.com","timestamp":"1970-01-01T00:00:01-00:00","share":true,"propagate":true,"use":{"title":"Sample Application 2"},"require":{}}}
         ],
         "adj_in_payloads":[
-          {
-            "identity": {
-              "originator_id": "1f262086-615f-11e3-bf13-d231feb1dc80",
-              "id": "received1"
-            },
-            "original": {
-              "timestamp": "2014-02-12T00:00:00-00:00",
-              "uri": "http://example.net",
-              "share": true,
-              "propagate": true,
-              "use": {
-                "title": "Received App"
-              }
-            },
-            "attributes": {
-              "timestamp": "2014-02-12T00:00:00-00:00",
-              "uri": "http://example.net",
-              "share": true,
-              "propagate": true,
-              "use": {
-                "title": "Received App"
-              }
-            }
-          }
+          {"identity":{"originator_id":"1f262087-615f-11e3-bf13-d231feb1dc81","id":"prop1"},"original":{"timestamp":"1970-01-01T00:00:01-00:00","uri":"http://example.com","share":true,"propagate":true,"use":{"title":"Sample Propagated Application"},"require":{}},"journal":[{"originator_id":"1f262086-615f-11e3-bf13-d231feb1dc81","timestamp":"1970-01-01T00:00:02-00:00","use":{"title":"Sample Application (originally propagated)"},"require":{}}],"attributes":{"uri":"http://example.com","timestamp":"1970-01-01T00:00:01-00:00","share":true,"propagate":true,"use":{"title":"Sample Application (originally propagated)"},"require":{}}}
         ]
       }
 
