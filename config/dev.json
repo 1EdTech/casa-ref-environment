@@ -24,10 +24,10 @@
           },
           "jobs":{
             "intervals":{
-              "receive_in":"5s",
-              "adj_in_to_adj_out":"5s",
-              "adj_in_to_local":"5s",
-              "local_to_adj_out":"5s"
+              "receive_in":"5m",
+              "adj_in_to_adj_out":"24h",
+              "adj_in_to_local":"24h",
+              "local_to_adj_out":"24h"
             }
           }
         },
