@@ -11,9 +11,9 @@
         "origin" : "http://github.com/AppSharing/casa-attribute"
       }
     },
-    "casa-attribute-title": {
+    "casa-attributes-common": {
       "remotes" : {
-        "origin" : "http://github.com/AppSharing/casa-attribute-title"
+        "origin" : "http://github.com/AppSharing/casa-attributes-common"
       }
     },
     "casa-engine": {

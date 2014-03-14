@@ -12,7 +12,6 @@
           "modules":[
             "publisher",
             "receiver",
-            "relay",
             "local"
           ],
           "database":{
@@ -52,7 +51,7 @@
       },
 
       "gems":{
-        "casa-attribute-title": { "path": "../casa-attribute-title" }
+        "casa-attributes-common": { "path": "../casa-attributes-common" }
       },
 
       "persistence":{
