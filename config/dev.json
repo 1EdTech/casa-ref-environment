@@ -29,6 +29,10 @@
               "local_to_adj_out":"24h",
               "local_index_rebuild":"24h"
             }
+          },
+          "admin":{
+            "username":"admin",
+            "password":"password"
           }
         },
         "attributes":{
