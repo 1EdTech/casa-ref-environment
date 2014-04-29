@@ -32,7 +32,8 @@
           },
           "admin":{
             "username":"admin",
-            "password":"password"
+            "password":"password",
+            "origin":"http://localhost"
           }
         },
         "attributes":{
