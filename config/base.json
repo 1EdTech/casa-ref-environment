@@ -8,17 +8,17 @@
   "packages": {
     "casa-attribute": {
       "remotes" : {
-        "origin" : "http://github.com/AppSharing/casa-attribute"
+        "origin" : "http://github.com/IMSGlobal/casa-attribute"
       }
     },
     "casa-attributes-common": {
       "remotes" : {
-        "origin" : "http://github.com/AppSharing/casa-attributes-common"
+        "origin" : "http://github.com/IMSGlobal/casa-attributes-common"
       }
     },
     "casa-engine": {
       "remotes" : {
-        "origin" : "http://github.com/AppSharing/casa-engine"
+        "origin" : "http://github.com/IMSGlobal/casa-engine"
       },
       "bundler": {
         "install": "install --without=mssql"
@@ -26,27 +26,27 @@
     },
     "casa-operation": {
       "remotes" : {
-        "origin" : "http://github.com/AppSharing/casa-operation"
+        "origin" : "http://github.com/IMSGlobal/casa-operation"
       }
     },
     "casa-payload": {
       "remotes" : {
-        "origin" : "http://github.com/AppSharing/casa-payload"
+        "origin" : "http://github.com/IMSGlobal/casa-payload"
       }
     },
     "casa-publisher": {
       "remotes" : {
-        "origin" : "http://github.com/AppSharing/casa-publisher"
+        "origin" : "http://github.com/IMSGlobal/casa-publisher"
       }
     },
     "casa-receiver": {
       "remotes" : {
-        "origin" : "http://github.com/AppSharing/casa-receiver"
+        "origin" : "http://github.com/IMSGlobal/casa-receiver"
       }
     },
     "casa-support": {
       "remotes" : {
-        "origin" : "http://github.com/AppSharing/casa-support"
+        "origin" : "http://github.com/IMSGlobal/casa-support"
       }
     }
   }
