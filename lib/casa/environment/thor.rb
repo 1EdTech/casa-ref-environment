@@ -36,7 +36,7 @@ module Casa
 
       def setup
 
-        prepare!
+        prepare
 
         check_dependencies
 
