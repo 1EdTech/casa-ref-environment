@@ -1,12 +1,12 @@
 Gem::Specification.new do |s|
 
   s.name        = 'casa-environment'
-  s.version     = '0.0.01'
+  s.version     = '0.1.0'
   s.summary     = 'Environment manager for the reference implementation for the CASA Protocol'
   s.authors     = ['Eric Bollens']
   s.email       = ['ebollens@ucla.edu']
-  s.homepage    = 'https://appsharing.github.io/casa-protocol'
-  s.license     = 'BSD-3-Clause'
+  s.homepage    = 'https://imsglobal.github.io/casa'
+  s.license     = 'Apache-2'
 
   s.files         = `git ls-files`.split($/)
   s.executables   = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
